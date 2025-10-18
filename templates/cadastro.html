@@ -1,13 +1,61 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card">
-  <h2>Criar Conta</h2>
-  <form method="POST">
-    <input type="text" name="nome" placeholder="Usuário" required>
-    <input type="password" name="senha" placeholder="Senha" required>
-    <button type="submit">Cadastrar</button>
-  </form>
-  <p>Já tem conta? <a href="{{ url_for('login') }}">Login</a></p>
-  {% if erro %}<p class="erro">{{ erro }}</p>{% endif %}
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #1c1c1c;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #000;
+            width: 300px;
+            text-align: center;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        a {
+            color: #17a2b8;
+            text-decoration: none;
+        }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Criar conta</h2>
+        <form method="POST" action="{{ url_for('registrar') }}">
+            <input type="text" name="nome" placeholder="Nome completo" required>
+            <input type="email" name="email" placeholder="E-mail" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Cadastrar</button>
+        </form>
+        <p>Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+    </div>
+</body>
+</html>
