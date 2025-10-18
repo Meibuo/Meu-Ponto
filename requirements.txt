@@ -4,3 +4,4 @@ flask_bcrypt
 flask_login
 psycopg2-binary
 gunicorn
+python-dotenv
