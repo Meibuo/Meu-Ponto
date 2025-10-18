@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Meu Ponto</title>
+<meta charset="UTF-8">
+<title>Login - Meu Ponto</title>
 </head>
 <body>
-    <h1>Login - Meu Ponto</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul>
-        {% for category, message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    <form method="POST">
-        <input type="text" name="usuario" placeholder="Usuário" required><br>
-        <input type="password" name="senha" placeholder="Senha" required><br>
-        <button type="submit">Entrar</button>
-    </form>
-    <p>Não tem conta? <a href="/register">Cadastre-se</a></p>
-    <footer>Planet Topografia</footer>
+<h2>Login</h2>
+<form method="post">
+    <label>Usuário:</label><br>
+    <input type="text" name="usuario" required><br>
+    <label>Senha:</label><br>
+    <input type="password" name="senha" required><br><br>
+    <button type="submit">Entrar</button>
+</form>
+<p>Não tem conta? <a href="/register">Cadastre-se</a></p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <p style="color:red">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 </body>
 </html>

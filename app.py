@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-# Criação da aplicação
 app = Flask(__name__)
 
 # Configurações via Environment Variables
@@ -15,7 +14,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Banco de dados
 db = SQLAlchemy(app)
 
 # Modelos
@@ -30,7 +28,7 @@ class Registro(db.Model):
     tipo = db.Column(db.String(20))  # Entrada ou Saída
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Criar tabelas (se não existirem)
+# Criar tabelas automaticamente
 with app.app_context():
     db.create_all()
 

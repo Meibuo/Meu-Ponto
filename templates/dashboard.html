@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Dashboard - Meu Ponto</title>
+<meta charset="UTF-8">
+<title>Dashboard - Meu Ponto</title>
 </head>
 <body>
-    <h1>Bem-vindo, {{ usuario.usuario }}</h1>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul>
-        {% for category, message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    <form method="POST">
-        <button type="submit" name="tipo" value="Entrada">Marcar Entrada</button>
-        <button type="submit" name="tipo" value="Saída">Marcar Saída</button>
-    </form>
-    <h2>Registros</h2>
-    <ul>
-        {% for reg in registros %}
-            <li>{{ reg.tipo }} - {{ reg.timestamp }}</li>
-        {% endfor %}
-    </ul>
-    <a href="/logout">Sair</a>
-    <footer>Planet Topografia</footer>
+<h2>Bem-vindo, {{ usuario.usuario }}</h2>
+<form method="post">
+    <label>Tipo:</label>
+    <select name="tipo">
+        <option value="Entrada">Entrada</option>
+        <option value="Saída">Saída</option>
+    </select>
+    <button type="submit">Registrar</button>
+</form>
+<h3>Registros:</h3>
+<ul>
+{% for r in registros %}
+    <li>{{ r.timestamp }} - {{ r.tipo }}</li>
+{% endfor %}
+</ul>
+<a href="/logout">Sair</a>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <p style="color:red">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 </body>
 </html>
