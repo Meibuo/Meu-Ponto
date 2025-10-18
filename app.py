@@ -3,19 +3,26 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
-app = Flask(__name__)
+# Inicialização do app Flask
+app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = os.getenv("SECRET_KEY", "chave-secreta-teste")
 
 # 🔹 Configuração do banco PostgreSQL (Render)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+db_url = os.getenv(
     "DATABASE_URL",
     "postgresql+psycopg://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto"
 )
+
+# Render às vezes envia URL com "postgres://" — precisa trocar pra "postgresql://"
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
-# Modelo de usuário
+# 🔹 Modelo de usuário
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(80), nullable=False)
@@ -25,14 +32,22 @@ class Usuario(db.Model):
 with app.app_context():
     db.create_all()
 
+# 🔹 Página inicial
 @app.route("/")
+def home():
+    return redirect(url_for("login"))
+
+# 🔹 Página de login
+@app.route("/login")
 def login():
     return render_template("login.html")
 
+# 🔹 Página de cadastro
 @app.route("/cadastro")
 def cadastro():
     return render_template("cadastro.html")
 
+# 🔹 Função para registrar usuário
 @app.route("/registrar", methods=["POST"])
 def registrar():
     nome = request.form.get("nome")
@@ -55,5 +70,11 @@ def registrar():
     flash("Cadastro realizado com sucesso!", "sucesso")
     return redirect(url_for("login"))
 
+# 🔹 Teste rápido (opcional)
+@app.route("/teste")
+def teste():
+    return "Servidor rodando normalmente!"
+
+# 🔹 Execução
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
