@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Meu Ponto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 15px;
+    }
+    footer {
+      margin-top: auto;
+      color: white;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="d-flex justify-content-between w-100 mb-2" style="max-width:480px;">
+    <h1 class="text-white"><i class="bi bi-clock-fill"></i> Meu Ponto</h1>
+    <a href="{{ url_for('logout') }}" class="btn btn-secondary align-self-center">Sair</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container position-relative mb-2">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Formulário de bater ponto -->
+  <div class="card p-4">
+    <h5 class="mb-3 text-center text-muted">Registrar Ponto</h5>
+    <form method="POST" class="d-flex gap-2 justify-content-center">
+      <button type="submit" name="tipo" value="Entrada" class="btn btn-success flex-fill"><i class="bi bi-box-arrow-in-right"></i> Entrada</button>
+      <button type="submit" name="tipo" value="Saída" class="btn btn-danger flex-fill"><i class="bi bi-box-arrow-right"></i> Saída</button>
+    </form>
+  </div>
+
+  <!-- Lista de registros -->
+  <div class="card p-4">
+    <h5 class="mb-3 text-center text-muted">Registros de Ponto</h5>
+    <ul class="list-group">
+      {% for r in registros %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ r.tipo }}
+        <span class="badge bg-primary rounded-pill">{{ r.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</span>
+      </li>
+      {% else %}
+      <li class="list-group-item text-center text-muted">Nenhum registro ainda</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <footer class="text-center mt-3">
+    Planet Topografia
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
