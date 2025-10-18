@@ -16,7 +16,7 @@ db = SQLAlchemy(app)
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(80), unique=True, nullable=False)
-    senha = db.Column(db.String(200), nullable=False)  # senha hashed
+    senha = db.Column(db.String(200), nullable=False)
 
 # Modelo de registro de ponto
 class Registro(db.Model):
@@ -25,19 +25,18 @@ class Registro(db.Model):
     tipo = db.Column(db.String(20))  # "Entrada" ou "Saída"
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Cria o banco de dados dentro do contexto da aplicação
+# Cria banco dentro do contexto da aplicação
 with app.app_context():
     if not os.path.exists('ponto.db'):
         db.create_all()
 
-# Rota raiz
+# Rotas
 @app.route('/')
 def index():
     if 'usuario_id' in session:
         return redirect(url_for('dashboard'))
     return redirect(url_for('login'))
 
-# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -56,7 +55,6 @@ def login():
 
     return render_template('login.html')
 
-# Cadastro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -77,7 +75,6 @@ def register():
 
     return render_template('register.html')
 
-# Dashboard
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
     if 'usuario_id' not in session:
@@ -85,7 +82,6 @@ def dashboard():
         return redirect(url_for('login'))
 
     usuario_id = session['usuario_id']
-    usuario_nome = session['usuario_nome']
     user = Usuario.query.get(usuario_id)
 
     if request.method == 'POST':
@@ -99,7 +95,6 @@ def dashboard():
     registros = Registro.query.filter_by(usuario_id=user.id).order_by(Registro.timestamp.desc()).all()
     return render_template('dashboard.html', usuario=user, registros=registros)
 
-# Logout
 @app.route('/logout')
 def logout():
     session.clear()
