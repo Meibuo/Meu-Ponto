@@ -2,13 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-import os
 
 app = Flask(__name__)
 app.secret_key = "sua_chave_secreta"  # Troque por algo seguro
 
-# Configuração PostgreSQL (substitua pelos seus dados do Render)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://USUARIO:SENHA@HOST:PORTA/NOME_DB'
+# Configuração PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -24,7 +23,7 @@ class Registro(db.Model):
     tipo = db.Column(db.String(20))  # Entrada ou Saída
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Criação do banco (somente na primeira execução)
+# Criação do banco (tabelas)
 with app.app_context():
     db.create_all()
 
