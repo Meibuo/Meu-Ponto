@@ -3,60 +3,72 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta_aqui'
+app.secret_key = "minha_chave_secreta"
 
 # Configuração do banco PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Modelo de usuário
-class User(db.Model):
+# Modelo de Usuário
+class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    nome = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    senha = db.Column(db.String(200), nullable=False)
 
-# Rota de login
+# Rota de Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
-            session['user_id'] = user.id
-            flash('Login feito com sucesso!', 'success')
+        email = request.form['email']
+        senha = request.form['senha']
+        usuario = Usuario.query.filter_by(email=email).first()
+        if usuario and check_password_hash(usuario.senha, senha):
+            session['user_id'] = usuario.id
+            flash("Login realizado com sucesso!", "success")
             return redirect(url_for('dashboard'))
         else:
-            flash('Usuário ou senha incorretos', 'danger')
+            flash("E-mail ou senha incorretos", "danger")
     return render_template('login.html')
 
-# Rota de cadastro
+# Rota de Cadastro
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        if User.query.filter_by(username=username).first():
-            flash('Usuário já existe!', 'warning')
+        nome = request.form['nome']
+        email = request.form['email']
+        senha = generate_password_hash(request.form['senha'])
+        
+        # Verifica se o usuário já existe
+        if Usuario.query.filter_by(email=email).first():
+            flash("E-mail já cadastrado", "danger")
             return redirect(url_for('register'))
-        hashed_password = generate_password_hash(password)
-        new_user = User(username=username, password=hashed_password)
-        db.session.add(new_user)
+        
+        novo_usuario = Usuario(nome=nome, email=email, senha=senha)
+        db.session.add(novo_usuario)
         db.session.commit()
-        flash('Cadastro realizado com sucesso!', 'success')
+        
+        flash("Cadastro realizado com sucesso!", "success")
         return redirect(url_for('login'))
     return render_template('register.html')
 
-# Dashboard (apenas exemplo)
+# Rota Dashboard (apenas exemplo)
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return "Bem-vindo ao dashboard!"
+    return f"Bem-vindo! ID do usuário: {session['user_id']}"
+
+# Rota Logout
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash("Logout realizado com sucesso!", "success")
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Cria as tabelas se não existirem
-    app.run(host='0.0.0.0', port=5000, debug=True)
+        db.create_all()  # Cria tabelas se não existirem
+    app.run(debug=True)
