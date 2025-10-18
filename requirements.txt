@@ -1,7 +1,4 @@
-flask
-flask_sqlalchemy
-flask_bcrypt
-flask_login
-psycopg2-binary
-gunicorn
-python-dotenv
+Flask==2.3.6
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.6
+gunicorn==21.2.0
