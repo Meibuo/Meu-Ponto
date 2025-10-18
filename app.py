@@ -6,8 +6,8 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "sua_chave_secreta"  # Troque por algo seguro
 
-# Configuração PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto'
+# Configuração PostgreSQL usando psycopg3
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg://meuponto:f62wXQtozjw2Mielya41xlfpqXu4YCZS@dpg-d3ps91u3jp1c7386vg8g-a/meuponto'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
