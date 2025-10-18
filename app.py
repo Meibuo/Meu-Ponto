@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.secret_key = "sua_chave_secreta"  # Troque para algo seguro em produção
+app.secret_key = "sua_chave_secreta"  # Use uma chave segura em produção
 
 # Configuração do banco SQLite
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ponto.db'
@@ -25,10 +25,9 @@ class Registro(db.Model):
     tipo = db.Column(db.String(20))  # "Entrada" ou "Saída"
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Cria o banco de dados dentro do contexto da aplicação
-with app.app_context():
-    if not os.path.exists('ponto.db'):
-        db.create_all()
+# Cria o banco se não existir
+if not os.path.exists('ponto.db'):
+    db.create_all()
 
 # Rota raiz
 @app.route('/')
