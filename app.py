@@ -6,10 +6,10 @@ import os
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "chave-secreta-teste")
 
-# Configuração do banco PostgreSQL (Render)
+# Configuração do banco PostgreSQL
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg://usuario:senha@host:porta/banco"
+    "postgresql+psycopg://usuario:senha@host:porta/dbname"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -25,16 +25,16 @@ class Usuario(db.Model):
 with app.app_context():
     db.create_all()
 
-# ----------------- ROTAS -----------------
+# =========================
+# Rotas
+# =========================
 
 @app.route("/")
-def home():
-    # Se usuário estiver logado, vai direto para o dashboard
-    if session.get("usuario_id"):
+def index():
+    if "usuario_id" in session:
         return redirect(url_for("dashboard"))
     return redirect(url_for("login"))
 
-# -------- LOGIN --------
 @app.route("/login")
 def login():
     return render_template("login.html")
@@ -43,18 +43,17 @@ def login():
 def login_post():
     email = request.form.get("email")
     senha = request.form.get("senha")
-    
+
     usuario = Usuario.query.filter_by(email=email).first()
-    if usuario and check_password_hash(usuario.senha, senha):
-        session["usuario_id"] = usuario.id
-        session["usuario_nome"] = usuario.nome
-        flash("Login realizado com sucesso!", "sucesso")
-        return redirect(url_for("dashboard"))
-    else:
-        flash("E-mail ou senha incorretos!", "erro")
+    if not usuario or not check_password_hash(usuario.senha, senha):
+        flash("E-mail ou senha incorretos", "erro")
         return redirect(url_for("login"))
 
-# -------- CADASTRO --------
+    session["usuario_id"] = usuario.id
+    session["usuario_nome"] = usuario.nome
+    flash(f"Bem-vindo, {usuario.nome}!", "sucesso")
+    return redirect(url_for("dashboard"))
+
 @app.route("/cadastro")
 def cadastro():
     return render_template("cadastro.html")
@@ -81,21 +80,21 @@ def registrar():
     flash("Cadastro realizado com sucesso!", "sucesso")
     return redirect(url_for("login"))
 
-# -------- DASHBOARD --------
 @app.route("/dashboard")
 def dashboard():
-    if not session.get("usuario_id"):
-        flash("Faça login para acessar o dashboard.", "erro")
+    if "usuario_id" not in session:
+        flash("Você precisa estar logado para acessar o dashboard.", "erro")
         return redirect(url_for("login"))
-    return render_template("dashboard.html", nome=session.get("usuario_nome"))
+    return f"Olá, {session['usuario_nome']}! Bem-vindo ao Dashboard."
 
-# -------- LOGOUT --------
 @app.route("/logout")
 def logout():
     session.clear()
     flash("Logout realizado com sucesso!", "sucesso")
     return redirect(url_for("login"))
 
-# ----------------- EXECUÇÃO -----------------
+# =========================
+# Run
+# =========================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", 5000)))
