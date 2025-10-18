@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Meu Ponto</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Login</h1>
+    <h1>Login</h1>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
             {% for category, message in messages %}
-              <div class="flash-message">{{ message }}</div>
+                <li style="color: {% if category=='success' %}green{% elif category=='danger' %}red{% else %}orange{% endif %};">
+                    {{ message }}
+                </li>
             {% endfor %}
-          {% endif %}
-        {% endwith %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
-        <form method="POST">
-            <input type="text" name="usuario" placeholder="Usuário" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit">Entrar</button>
-        </form>
+    <form action="{{ url_for('login') }}" method="POST">
+        <label>Usuário:</label><br>
+        <input type="text" name="username" required><br><br>
 
-        <p>Não tem conta? <a href="{{ url_for('register') }}">Cadastre-se</a></p>
-    </div>
+        <label>Senha:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p>Não possui conta? <a href="{{ url_for('register') }}">Cadastre-se aqui</a></p>
 </body>
 </html>

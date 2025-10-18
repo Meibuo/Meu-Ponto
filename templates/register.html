@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro - Meu Ponto</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Cadastro</h1>
+    <h1>Cadastro</h1>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
             {% for category, message in messages %}
-              <div class="flash-message">{{ message }}</div>
+                <li style="color: {% if category=='success' %}green{% elif category=='danger' %}red{% else %}orange{% endif %};">
+                    {{ message }}
+                </li>
             {% endfor %}
-          {% endif %}
-        {% endwith %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 
-        <form method="POST">
-            <input type="text" name="usuario" placeholder="Usuário" required>
-            <input type="password" name="senha" placeholder="Senha" required>
-            <button type="submit">Cadastrar</button>
-        </form>
+    <form action="{{ url_for('register') }}" method="POST">
+        <label>Usuário:</label><br>
+        <input type="text" name="username" required><br><br>
 
-        <p>Já tem conta? <a href="{{ url_for('login') }}">Login</a></p>
-    </div>
+        <label>Senha:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <p>Já possui conta? <a href="{{ url_for('login') }}">Faça login aqui</a></p>
 </body>
 </html>
