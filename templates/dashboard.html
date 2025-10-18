@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Meu Ponto</title>
+</head>
+<body>
+    <h1>Bem-vindo, {{ usuario.usuario }}</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <button type="submit" name="tipo" value="Entrada">Marcar Entrada</button>
+        <button type="submit" name="tipo" value="Saída">Marcar Saída</button>
+    </form>
+    <h2>Registros</h2>
+    <ul>
+        {% for reg in registros %}
+            <li>{{ reg.tipo }} - {{ reg.timestamp }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/logout">Sair</a>
+    <footer>Planet Topografia</footer>
+</body>
+</html>
