@@ -1,4 +1,6 @@
 flask
+flask_sqlalchemy
+flask_bcrypt
+flask_login
 psycopg2-binary
-sqlalchemy
 gunicorn
