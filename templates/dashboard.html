@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Registrar Ponto</h2>
+  <form method="POST" action="{{ url_for('registrar') }}">
+    <select name="tipo" required>
+      <option value="Entrada">Entrada</option>
+      <option value="Saída">Saída</option>
+      <option value="Intervalo">Intervalo</option>
+    </select>
+    <input type="text" name="observacao" placeholder="Observação (opcional)">
+    <button type="submit">Registrar</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Meus Registros</h2>
+  <ul>
+    {% for r in registros %}
+      <li>{{ r.timestamp.strftime('%d/%m %H:%M') }} — {{ r.tipo }} {% if r.observacao %} ({{ r.observacao }}){% endif %}</li>
+    {% else %}
+      <li>Nenhum registro ainda.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
