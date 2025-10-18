@@ -7,8 +7,8 @@ import os
 app = Flask(__name__)
 app.secret_key = "sua_chave_secreta"  # Troque por algo seguro
 
-# Configuração do banco
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ponto.db'
+# Configuração PostgreSQL (substitua pelos seus dados do Render)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://USUARIO:SENHA@HOST:PORTA/NOME_DB'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -24,10 +24,9 @@ class Registro(db.Model):
     tipo = db.Column(db.String(20))  # Entrada ou Saída
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-# Criação do banco
+# Criação do banco (somente na primeira execução)
 with app.app_context():
-    if not os.path.exists('ponto.db'):
-        db.create_all()
+    db.create_all()
 
 # Rotas
 @app.route('/')
